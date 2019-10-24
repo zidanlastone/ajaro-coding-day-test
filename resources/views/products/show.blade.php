@@ -2,13 +2,11 @@
 @section('content')
 
 <div class="container"> 
-    <a href="{{route('products.create')}}" class="btn btn-primary m-3">Tambah</a>
-    
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <a href="{{route('products.create')}}" class="btn btn-primary m-3"> <i class="icon ion-md-add"></i> Tambah</a>
     <div class="card">
         <div class="card-body">
         <h4 class="card-title">Daftar Produk</h4>
-            <table class="table">
+            <table class="table table-sm" >
                 <thead>
                     <tr>
                         <th>No</th>
@@ -26,8 +24,13 @@
                         <td>{{$product->nama}}</td>
                         <td>{{$product->harga}}</td>
                         <td>
-                        <button class="btn btn-warning">Ubah</button>
-                        <button class="btn btn-danger" onclick="deleteProduct({{$product->id}})">Hapus</button> 
+                        
+                        <form action="{{route('products.destroy', $product->id)}}" method="POST">
+                        <a href="{{route('products.edit', $product->id)}}" class="btn btn-warning"> <i class="icon ion-md-create"></i> Ubah</a>
+                        @csrf
+                        @method('delete')
+                            <button type="submit" class="btn btn-danger"><i class="icon ion-md-trash"></i> Hapus</button> 
+                        </form>
                         </td>
                     </tr>
                     @endforeach
@@ -36,25 +39,4 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    function deleteProduct(id){
-        console.log(id);
-        $.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        var token = $('meta[name="csrf-token"]').attr('content');
-        $.ajax({
-            type:'DELETE',
-            url: "{{route('products.destroy', "id")}}",
-            data: {
-                "id": id,
-                "_token": token
-            }
-        });
-    }
-</script>
 @endsection

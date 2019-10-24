@@ -11,7 +11,7 @@ class ProductController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */
+     */     
     public function index()
     {
         //
@@ -59,9 +59,11 @@ class ProductController extends Controller
      * @param  \App\Model\Products  $products
      * @return \Illuminate\Http\Response
      */
-    public function show(Products $products)
+    public function show($id)
     {
         //
+        $product = Products::find($id);
+        return view('products.detail', ['product' => $product]);
     }
 
     /**
@@ -70,10 +72,11 @@ class ProductController extends Controller
      * @param  \App\Model\Products  $products
      * @return \Illuminate\Http\Response
      */
-    public function edit(Products $products)
+    public function edit($id)
     {
         //
-        return view('products.update', $products);
+        $product = Products::findOrFail($id);
+        return view('products.edit', ['product'=> $product]);
     }
 
     /**
@@ -83,7 +86,7 @@ class ProductController extends Controller
      * @param  \App\Model\Products  $products
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Products $products)
+    public function update(Request $request, $id)
     {
         //
         $request->validate([
@@ -94,7 +97,8 @@ class ProductController extends Controller
             'harga' => 'required',
             'berat' =>'required'
         ]);
-
+        
+        $products = Products::find($id);
         $products->update($request->all());
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil dirubah');
@@ -107,11 +111,11 @@ class ProductController extends Controller
      * @param  \App\Model\Products  $products
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Products $products)
+    public function destroy($id)
     {
         //
-        $products->delete();
+        $product = Products::find($id);
+        $product->delete();
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus');
-   
     }
 }
